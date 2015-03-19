@@ -14,7 +14,6 @@ def sendAsset(address,amnt):
     payload = {'address': address, 'amount': amnt}
     r2 = requests.post(url + "sendasset", params=payload)
 
-sendAsset("bYqj5ZsHXRcA5VcyUR1cPP64jRi8ej6pU6d","1")
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
