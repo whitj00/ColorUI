@@ -132,6 +132,7 @@ class Ui_Form(QtGui.QWidget):
         self.assetsWidget.setSortingEnabled(False)
         self.assetsWidget.setSortingEnabled(__sortingEnabled)
         self.label_4.setText(_translate("Form", "Address:", None))
+        self.label.setText(_translate("Form", "Address:", None))
         self.rf_btn.setText(_translate("Form", "Refresh", None))
         self.chw_btn.setText(_translate("Form", "Change Wallet", None))
         self.rf_btn.clicked.connect(self.refresh)
@@ -141,10 +142,11 @@ class Ui_Form(QtGui.QWidget):
         getBalance()
 
     def chWallet(self):
-        app = QtGui.QApplication(sys.argv)
-        ex = Ui_Form2()
+        ex2.hide()
         ex.show()
-        app.exec_()
+
+
+
 
 class Ui_Form2(QtGui.QWidget):
     def __init__(self):
@@ -169,7 +171,7 @@ class Ui_Form2(QtGui.QWidget):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
     def retranslateUi2(self, Form):
-        Form.setWindowTitle(_translate("Form", "Form", None))
+        Form.setWindowTitle(_translate("Form", "ColorUI", None))
         self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:28pt; font-weight:600;\">ColorUI</span></p></body></html>", None))
         self.label_2.setText(_translate("Form", "Enter URL:", None))
         self.pushButton.setText(_translate("Form", "Access Wallet", None))
@@ -178,20 +180,19 @@ class Ui_Form2(QtGui.QWidget):
 
 
     def screen2(form):
-        getBalance()
-        app = QtGui.QApplication(sys.argv)
-        ex = Ui_Form()
-        ex.show()
         ex2.hide()
-        app.exec_()
+        ex.show()
+
 
 if __name__ == '__main__':
     getBalance()
     app2 = QtGui.QApplication(sys.argv)
+    global ex2
     ex2 = Ui_Form2()
     ex2.show()
+    global ex
+    ex = Ui_Form()
     sys.exit(app2.exec_())
-
 
 
 
