@@ -140,20 +140,21 @@ class Ui_Form(QtGui.QWidget):
 
     def sendAsset(form):
         global r2
-        payload = {'address': "%s"%form.snd_add.text(), 'asset': "%s"%asset, 'amount': "%s"%form.snd_amnt.text()}
-        r2 = requests.post(url + "sendasset", params=payload)
+        payload = {'address': "%s"%addy, 'asset': "%s"%asset, 'amount': "%s"%form.snd_amnt.text(), "to": "%s"%form.snd_add.text()}
+        r2 = requests.post(url + "sendasset", data=payload)
         print r2.json(),asset,form.snd_add.text(),form.snd_amnt.text()
         print(r2.url)
 
     def issueAsset(form):
         global r3
         payload = {'address': "%s"%addy, "to": "%s"%form.issue_add.text(), 'amount': "%s"%form.issue_amnt.text()}
-        r3 = requests.post(url + "issueasset", params=payload)
+        r3 = requests.post(url + "issueasset", data=payload)
         print r3.json(),addy,form.snd_add.text(),form.snd_amnt.text()
         print(r3.url)
 
     def refresh(self):
         ex.hide()
+        getBalance()
         ex.show()
 
     def chWallet(self):
@@ -204,11 +205,7 @@ class Ui_Form2(QtGui.QWidget):
 
     def screen2(form):
         url = form.lineEdit.text()
-        #try:
         requests.post(url + "getbalance").json()
-        ## Commented this out because i wasnt sure if you wanted it to access a default wallet when an invalid one was entered, or just error."
-        #except:
-            #print "Enter Valid URL, IE: http://dev.opal-coin.com:8080/"
         global ex
         ex = Ui_Form()
         ex2.hide()
