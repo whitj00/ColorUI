@@ -2,22 +2,11 @@ from PyQt4 import QtCore, QtGui
 import requests,json,sys
 
 global url
-url = 'http://dev.opal-coin.com:8080/'
-
+url = "http://dev.opal-coin.com:8080/"
 
 def getBalance():
     global r
     r = requests.post(url + "getbalance").json()
-
-def sendAsset(address,amnt,toaddy):
-    global r2
-    payload = {'address': address, 'to': toaddy, 'amount': amnt}
-    r2 = requests.post(url + "sendasset", params=payload)
-
-def issueAsset(address,amnt,asset):
-    global r3
-    payload = {'address': address, 'asset': asset, 'amount': amnt}
-    r3 = requests.post(url + "issueasset", params=payload)
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -32,6 +21,8 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
+
+
 
 class Ui_Form(QtGui.QWidget):
     def __init__(self):
@@ -56,10 +47,10 @@ class Ui_Form(QtGui.QWidget):
         self.label_2 = QtGui.QLabel(Form)
         self.label_2.setObjectName(_fromUtf8("label_2"))
         self.gridLayout.addWidget(self.label_2, 7, 0, 1, 1)
-        self.send_add = QtGui.QLineEdit(Form)
-        self.send_add.setText(_fromUtf8(""))
-        self.send_add.setObjectName(_fromUtf8("send_add"))
-        self.gridLayout.addWidget(self.send_add, 11, 0, 1, 1)
+        self.snd_add = QtGui.QLineEdit(Form)
+        self.snd_add.setText(_fromUtf8(""))
+        self.snd_add.setObjectName(_fromUtf8("snd_add"))
+        self.gridLayout.addWidget(self.snd_add, 11, 0, 1, 1)
         self.label_3 = QtGui.QLabel(Form)
         self.label_3.setObjectName(_fromUtf8("label_3"))
         self.gridLayout.addWidget(self.label_3, 7, 2, 1, 1)
@@ -91,13 +82,18 @@ class Ui_Form(QtGui.QWidget):
         self.gridLayout.addWidget(self.chw_btn, 3, 0, 1, 1)
 
         self.retranslateUi(Form)
-        QtCore.QMetaObject.connectSlotsByName(Form)   
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+
+
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "ColorUI", None))
         self.addressWidget.headerItem().setText(0, _translate("Form", "Addresses", None))
         __sortingEnabled = self.addressWidget.isSortingEnabled()
         self.addressWidget.setSortingEnabled(False)
+
+        getBalance()
 
         for item in r:
             qi = QtGui.QTreeWidgetItem()
@@ -113,13 +109,13 @@ class Ui_Form(QtGui.QWidget):
         self.assetsWidget.setSortingEnabled(False)
 
         for item in r:
-            print item
             for a in item['assets']:
                 qi = QtGui.QTreeWidgetItem()
                 qi.setText(0, _translate("Form", a['asset_id'], None))
                 qi_c = QtGui.QTreeWidgetItem()
                 qi_c.setText(0, _translate("Form", a['quantity'], None))
                 qi.addChild(qi_c)
+
                 self.assetsWidget.addTopLevelItem(qi)
 
         self.assetsWidget.setSortingEnabled(__sortingEnabled)
@@ -137,16 +133,44 @@ class Ui_Form(QtGui.QWidget):
         self.chw_btn.setText(_translate("Form", "Change Wallet", None))
         self.rf_btn.clicked.connect(self.refresh)
         self.chw_btn.clicked.connect(self.chWallet)
+        self.assetsWidget.currentItemChanged.connect(self.assetClick)
+        self.addressWidget.currentItemChanged.connect(self.addyClick)
+        self.sa_btn.clicked.connect(self.sendAsset)
+        self.ia_btn.clicked.connect(self.issueAsset)
+
+    def sendAsset(form):
+        global r2
+        payload = {'address': "%s"%form.snd_add.text(), 'asset': "%s"%asset, 'amount': "%s"%form.snd_amnt.text()}
+        r2 = requests.post(url + "sendasset", params=payload)
+        print r2.json(),asset,form.snd_add.text(),form.snd_amnt.text()
+        print(r2.url)
+
+    def issueAsset(form):
+        global r3
+        payload = {'address': "%s"%addy, "to": "%s"%form.issue_add.text(), 'amount': "%s"%form.issue_amnt.text()}
+        r3 = requests.post(url + "issueasset", params=payload)
+        print r3.json(),addy,form.snd_add.text(),form.snd_amnt.text()
+        print(r3.url)
 
     def refresh(self):
-        getBalance()
-
-    def chWallet(self):
-        ex2.hide()
+        ex.hide()
         ex.show()
 
+    def chWallet(self):
+        ex.hide()
+        ex2.show()
 
+    def assetClick(self, current, previous):
+        if (previous != None):
+            print "old: " + previous.text(0)
+        global asset
+        asset = current.text(0)
 
+    def addyClick(self, current, previous):
+        if (previous != None):
+            print "old: " + previous.text(0)
+        global addy
+        addy = current.text(0)
 
 class Ui_Form2(QtGui.QWidget):
     def __init__(self):
@@ -170,6 +194,7 @@ class Ui_Form2(QtGui.QWidget):
         self.retranslateUi2(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+
     def retranslateUi2(self, Form):
         Form.setWindowTitle(_translate("Form", "ColorUI", None))
         self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:28pt; font-weight:600;\">ColorUI</span></p></body></html>", None))
@@ -177,25 +202,21 @@ class Ui_Form2(QtGui.QWidget):
         self.pushButton.setText(_translate("Form", "Access Wallet", None))
         self.pushButton.clicked.connect(self.screen2)
 
-
-
     def screen2(form):
+        url = form.lineEdit.text()
+        #try:
+        requests.post(url + "getbalance").json()
+        ## Commented this out because i wasnt sure if you wanted it to access a default wallet when an invalid one was entered, or just error."
+        #except:
+            #print "Enter Valid URL, IE: http://dev.opal-coin.com:8080/"
+        global ex
+        ex = Ui_Form()
         ex2.hide()
         ex.show()
 
-
 if __name__ == '__main__':
-    getBalance()
     app2 = QtGui.QApplication(sys.argv)
     global ex2
     ex2 = Ui_Form2()
     ex2.show()
-    global ex
-    ex = Ui_Form()
     sys.exit(app2.exec_())
-
-
-
-
-
-
