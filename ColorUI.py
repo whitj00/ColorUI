@@ -119,8 +119,8 @@ class Ui_Form(QtGui.QWidget):
                 self.assetsWidget.addTopLevelItem(qi)
 
         self.assetsWidget.setSortingEnabled(__sortingEnabled)
-        self.label_2.setText(_translate("Form", "Ammount:", None))
-        self.label_3.setText(_translate("Form", "Ammount:", None))
+        self.label_2.setText(_translate("Form", "Amount:", None))
+        self.label_3.setText(_translate("Form", "Amount:", None))
         self.sa_btn.setText(_translate("Form", "Send Assets", None))
         self.ia_btn.setText(_translate("Form", "Issue Assets", None))
         self.assetsWidget.headerItem().setText(0, _translate("Form", "Assets", None))
@@ -205,9 +205,9 @@ class Ui_Form2(QtGui.QWidget):
         self.label = QtGui.QLabel(Form)
         self.label.setGeometry(QtCore.QRect(190, -10, 141, 101))
         self.label.setObjectName(_fromUtf8("label"))
-        self.lineEdit = QtGui.QLineEdit(Form)
-        self.lineEdit.setGeometry(QtCore.QRect(150, 140, 231, 16))
-        self.lineEdit.setObjectName(_fromUtf8("lineEdit"))
+        self.address = QtGui.QLineEdit(Form)
+        self.address.setGeometry(QtCore.QRect(150, 140, 231, 16))
+        self.address.setObjectName(_fromUtf8("lineEdit"))
         self.label_2 = QtGui.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(230, 110, 51, 16))
         self.label_2.setObjectName(_fromUtf8("label_2"))
@@ -226,7 +226,7 @@ class Ui_Form2(QtGui.QWidget):
         self.pushButton.clicked.connect(self.screen2)
 
     def screen2(form):
-        url = form.lineEdit.text()
+        url = form.address.text()
         requests.post(url + "getbalance").json()
         global ex
         ex = Ui_Form()
