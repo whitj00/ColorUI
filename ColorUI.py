@@ -131,12 +131,37 @@ class Ui_Form(QtGui.QWidget):
         self.label.setText(_translate("Form", "Address:", None))
         self.rf_btn.setText(_translate("Form", "Refresh", None))
         self.chw_btn.setText(_translate("Form", "Change Wallet", None))
-        self.rf_btn.clicked.connect(self.refresh)
+        self.rf_btn.clicked.connect(self.rebuild)
         self.chw_btn.clicked.connect(self.chWallet)
         self.assetsWidget.currentItemChanged.connect(self.assetClick)
         self.addressWidget.currentItemChanged.connect(self.addyClick)
         self.sa_btn.clicked.connect(self.sendAsset)
+        self.sa_btn.clicked.connect(self.rebuild)
         self.ia_btn.clicked.connect(self.issueAsset)
+        self.ia_btn.clicked.connect(self.rebuild)
+
+    def rebuild(form):
+        getBalance()
+        form.addressWidget.clear()
+        for item in r:
+            qi = QtGui.QTreeWidgetItem()
+            qi.setText(0, _translate("Form", item['address'], None))
+            qi_c = QtGui.QTreeWidgetItem()
+            qi_c.setText(0, _translate("Form", item['value'], None))
+            qi.addChild(qi_c)
+            form.addressWidget.addTopLevelItem(qi)
+
+        form.assetsWidget.clear()
+        for item in r:
+            for a in item['assets']:
+                qi = QtGui.QTreeWidgetItem()
+                qi.setText(0, _translate("Form", a['asset_id'], None))
+                qi_c = QtGui.QTreeWidgetItem()
+                qi_c.setText(0, _translate("Form", a['quantity'], None))
+                qi.addChild(qi_c)
+
+                form.assetsWidget.addTopLevelItem(qi)
+
 
     def sendAsset(form):
         global r2
@@ -145,6 +170,7 @@ class Ui_Form(QtGui.QWidget):
         print r2.json(),asset,form.snd_add.text(),form.snd_amnt.text()
         print(r2.url)
 
+
     def issueAsset(form):
         global r3
         payload = {'address': "%s"%addy, "to": "%s"%form.issue_add.text(), 'amount': "%s"%form.issue_amnt.text()}
@@ -152,10 +178,6 @@ class Ui_Form(QtGui.QWidget):
         print r3.json(),addy,form.snd_add.text(),form.snd_amnt.text()
         print(r3.url)
 
-    def refresh(self):
-        ex.hide()
-        getBalance()
-        ex.show()
 
     def chWallet(self):
         ex.hide()
