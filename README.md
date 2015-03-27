@@ -21,7 +21,7 @@ Install requests and PyQT - be 100% sure you matched architecture versions, ie. 
 double click the .py file and enter an exact url, by default its set to http://dev.opal-coin.com:8080/
 You will see the output in a second window, close either to exit the program gracefully.
 
-Liux:
+Linux:
 Install requests and pyqt with your package manager, execute the script with:
 python ColorUI.py
 or double click the script on your desktop, as the application will not run without x
