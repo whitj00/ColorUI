@@ -1,12 +1,6 @@
 from PyQt4 import QtCore, QtGui
 import requests,json,sys
 
-global url
-url = "http://dev.opal-coin.com:8080/"
-
-def getBalance():
-    global r
-    r = requests.post(url + "getbalance").json()
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -21,8 +15,6 @@ try:
 except AttributeError:
     def _translate(context, text, disambig):
         return QtGui.QApplication.translate(context, text, disambig)
-
-
 
 class Ui_Form(QtGui.QWidget):
     def __init__(self):
@@ -84,15 +76,11 @@ class Ui_Form(QtGui.QWidget):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-
-
-
     def retranslateUi(self, Form):
         Form.setWindowTitle(_translate("Form", "ColorUI", None))
         self.addressWidget.headerItem().setText(0, _translate("Form", "Addresses", None))
         __sortingEnabled = self.addressWidget.isSortingEnabled()
         self.addressWidget.setSortingEnabled(False)
-
         getBalance()
 
         for item in r:
@@ -140,6 +128,7 @@ class Ui_Form(QtGui.QWidget):
         self.ia_btn.clicked.connect(self.issueAsset)
         self.ia_btn.clicked.connect(self.rebuild)
 
+
     def rebuild(form):
         getBalance()
         form.addressWidget.clear()
@@ -162,14 +151,16 @@ class Ui_Form(QtGui.QWidget):
 
                 form.assetsWidget.addTopLevelItem(qi)
 
-
     def sendAsset(form):
         global r2
         payload = {'address': "%s"%addy, 'asset': "%s"%asset, 'amount': "%s"%form.snd_amnt.text(), "to": "%s"%form.snd_add.text()}
         r2 = requests.post(url + "sendasset", data=payload)
         print r2.json(),asset,form.snd_add.text(),form.snd_amnt.text()
         print(r2.url)
-
+        global stuff
+        stuff = r2.json()
+        ex3 = popupForm()
+        ex3.show()
 
     def issueAsset(form):
         global r3
@@ -177,7 +168,10 @@ class Ui_Form(QtGui.QWidget):
         r3 = requests.post(url + "issueasset", data=payload)
         print r3.json(),addy,form.snd_add.text(),form.snd_amnt.text()
         print(r3.url)
-
+        #global stuff
+        #stuff = r3.json()
+        #ex3 = popupForm()
+        #ex3.show()
 
     def chWallet(self):
         ex.hide()
@@ -207,7 +201,7 @@ class Ui_Form2(QtGui.QWidget):
         self.label.setObjectName(_fromUtf8("label"))
         self.address = QtGui.QLineEdit(Form)
         self.address.setGeometry(QtCore.QRect(150, 140, 231, 16))
-        self.address.setObjectName(_fromUtf8("lineEdit"))
+        self.address.setObjectName(_fromUtf8("address"))
         self.label_2 = QtGui.QLabel(Form)
         self.label_2.setGeometry(QtCore.QRect(230, 110, 51, 16))
         self.label_2.setObjectName(_fromUtf8("label_2"))
@@ -217,7 +211,6 @@ class Ui_Form2(QtGui.QWidget):
         self.retranslateUi2(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-
     def retranslateUi2(self, Form):
         Form.setWindowTitle(_translate("Form", "ColorUI", None))
         self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:28pt; font-weight:600;\">ColorUI</span></p></body></html>", None))
@@ -226,6 +219,7 @@ class Ui_Form2(QtGui.QWidget):
         self.pushButton.clicked.connect(self.screen2)
 
     def screen2(form):
+        global url
         url = form.address.text()
         requests.post(url + "getbalance").json()
         global ex
@@ -233,9 +227,36 @@ class Ui_Form2(QtGui.QWidget):
         ex2.hide()
         ex.show()
 
+def getBalance():
+    global r
+    r = requests.post(url + "getbalance").json()
+
+class popupForm(QtGui.QWidget):
+    def __init__(self):
+        QtGui.QWidget.__init__(self)
+        self.setupUi(self)
+
+    def setupUi(self, Form):
+        Form.setObjectName(_fromUtf8("Form"))
+        Form.resize(276, 88)
+        self.horizontalLayout = QtGui.QHBoxLayout(Form)
+        self.horizontalLayout.setObjectName(_fromUtf8("horizontalLayout"))
+        self.label = QtGui.QLabel(Form)
+        self.label.setObjectName(_fromUtf8("label"))
+        self.horizontalLayout.addWidget(self.label)
+
+        self.uiText(Form)
+        QtCore.QMetaObject.connectSlotsByName(Form)
+
+    def uiText(self, Form):
+        print stuff
+        Form.setWindowTitle(_translate("Form", "Result", None))
+        self.label.setText(_translate("Form", "<html><head/><body><p><span style=\" font-size:14pt;\">%s</span></p></body></html>"%stuff, None))
+
+
 if __name__ == '__main__':
-    app2 = QtGui.QApplication(sys.argv)
+    app = QtGui.QApplication(sys.argv)
     global ex2
     ex2 = Ui_Form2()
     ex2.show()
-    sys.exit(app2.exec_())
+    sys.exit(app.exec_())
