@@ -85,7 +85,7 @@ class Ui_Form(QtGui.QWidget):
 
         for item in r:
             qi = QtGui.QTreeWidgetItem()
-            qi.setText(0, _translate("Form", item['address'], None))
+            qi.setText(0, _translate("Form", item['oa_address'], None))
             qi_c = QtGui.QTreeWidgetItem()
             qi_c.setText(0, _translate("Form", item['value'], None))
             qi.addChild(qi_c)
@@ -134,7 +134,7 @@ class Ui_Form(QtGui.QWidget):
         form.addressWidget.clear()
         for item in r:
             qi = QtGui.QTreeWidgetItem()
-            qi.setText(0, _translate("Form", item['address'], None))
+            qi.setText(0, _translate("Form", item['oa_address'], None))
             qi_c = QtGui.QTreeWidgetItem()
             qi_c.setText(0, _translate("Form", item['value'], None))
             qi.addChild(qi_c)
